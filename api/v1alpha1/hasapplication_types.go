@@ -17,6 +17,7 @@ limitations under the License.
 package v1alpha1
 
 import (
+	devfile "github.com/devfile/api/v2/pkg/apis/workspaces/v1alpha2"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -29,13 +30,33 @@ type HASApplicationSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of HASApplication. Edit hasapplication_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	//Foo string `json:"foo,omitempty"`
+
+	// DisplayName refers to the name that an application will be deployed with in App Studio.
+	DisplayName string `json:"displayName,omitempty"`
+
+	// AppModelRepository refers to the git repository that will store the application model (a devfile)
+	// Can be the same as GitOps repository.
+	// A repository will be generated if this field is left blank.
+	AppModelRepository string `json:"appModelRepository,omitempty"`
+
+	// GitOpsRepository refers to the git repository that will store the gitops resources.
+	// Can be the same as App Model Repository.
+	// A repository will be generated if this field is left blank.
+	GitOpsRepository string `json:"gitOpsRepository,omitempty"`
+
+	// Description refers to a brief description of the application.
+	Description string `json:"description,omitempty"`
 }
 
 // HASApplicationStatus defines the observed state of HASApplication
 type HASApplicationStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	Conditions []metav1.Condition `json:"conditions"`
+
+	// Devfile corresponds to the devfile representation of the HASApplication resource
+	Devfile devfile.Devfile `json:"Devfile,omitempty"`
 }
 
 //+kubebuilder:object:root=true
