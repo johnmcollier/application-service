@@ -1,0 +1,12 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: HASApplication
+metadata:
+  name: hasapplication-sample
+spec:
+  # Add fields here
+  displayName: "petclinic"
+  description: "application definition for petclinic-app"
+  gitOpsRepository: 
+    url: "https://github.com/johnmcollier/petclinic-gitops"
+  appModelRepository: 
+    url: "https://github.com/johnmcollier/petclinic-app"

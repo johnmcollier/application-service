@@ -17,7 +17,6 @@ limitations under the License.
 package v1alpha1
 
 import (
-	devfile "github.com/devfile/api/v2/pkg/apis/workspaces/v1alpha2"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -38,15 +37,32 @@ type HASApplicationSpec struct {
 	// AppModelRepository refers to the git repository that will store the application model (a devfile)
 	// Can be the same as GitOps repository.
 	// A repository will be generated if this field is left blank.
-	AppModelRepository string `json:"appModelRepository,omitempty"`
+	// +optional
+	AppModelRepository HASApplicationGitRepository `json:"appModelRepository,omitempty"`
 
 	// GitOpsRepository refers to the git repository that will store the gitops resources.
 	// Can be the same as App Model Repository.
 	// A repository will be generated if this field is left blank.
-	GitOpsRepository string `json:"gitOpsRepository,omitempty"`
+	// +optional
+	GitOpsRepository HASApplicationGitRepository `json:"gitOpsRepository,omitempty"`
 
 	// Description refers to a brief description of the application.
 	Description string `json:"description,omitempty"`
+}
+
+// HASApplicationGitRepository defines a git repository for a given HASApplication resource (either appmodel or gitops)
+type HASApplicationGitRepository struct {
+	// URL refers to the repository URL that should be used.
+	// +required
+	URL string `json:"url"`
+
+	// Branch corresponds to the branch in the repository that should be used
+	// +optional
+	Branch string `json:"branch,omitempty"`
+
+	// Context corresponds to the context within the repository that should be used
+	// +optional
+	Context string `json:"context,omitempty"`
 }
 
 // HASApplicationStatus defines the observed state of HASApplication
@@ -56,13 +72,15 @@ type HASApplicationStatus struct {
 	Conditions []metav1.Condition `json:"conditions"`
 
 	// Devfile corresponds to the devfile representation of the HASApplication resource
-	Devfile devfile.Devfile `json:"Devfile,omitempty"`
+	Devfile string `json:"devfile,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
 // HASApplication is the Schema for the hasapplications API
+// +kubebuilder:resource:path=hasapplications,shortName=hasapp;ha
+// +kubebuilder:subresource:status
 type HASApplication struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
